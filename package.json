@@ -1,0 +1,37 @@
+{
+  "name": "zap-oracle-coinmarketcap",
+  "version": "0.0.1",
+  "description": "Conimarketcap Zap oracle.",
+  "main": "Oracle/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build && node Oracle/index.js"
+  },
+  "keywords": [
+    "Zap",
+    "Ethereum",
+    "Oracle",
+    "blockchain"
+  ],
+  "author": "Michael Man, propulsor",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.7.1",
+    "@zapjs/artifacts": "^2.0.16",
+    "@zapjs/bondage": "^2.0.13",
+    "@zapjs/dispatch": "^2.0.15",
+    "@zapjs/provider": "^2.0.16",
+    "@zapjs/subscriber": "^2.0.12",
+    "@zapjs/zaptoken": "^2.0.12",
+    "path": "^0.12.7",
+    "request": "^2.88.0",
+    "truffle-hdwallet-provider": "git+https://github.com/zapproject/truffle-hdwallet-provider.git",
+    "web3": "^1.0.0-beta.36",
+    "websocket": "^1.0.28"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0",
+    "typescript": "^3.0.3"
+  }
+}

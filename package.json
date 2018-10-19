@@ -5,8 +5,9 @@
   "main": "Oracle/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build && node Oracle/index.js"
+    "test": "jest",
+    "start": "npm run build && node Oracle/index.js",
+    "migrate": "knex migrate:latest"
   },
   "keywords": [
     "Zap",
@@ -24,6 +25,8 @@
     "@zapjs/provider": "^2.0.16",
     "@zapjs/subscriber": "^2.0.12",
     "@zapjs/zaptoken": "^2.0.12",
+    "knex": "^0.15.2",
+    "mysql": "^2.16.0",
     "path": "^0.12.7",
     "request": "^2.88.0",
     "truffle-hdwallet-provider": "git+https://github.com/zapproject/truffle-hdwallet-provider.git",
@@ -32,6 +35,7 @@
   },
   "devDependencies": {
     "babel-polyfill": "^6.26.0",
+    "jest": "^23.6.0",
     "typescript": "^3.0.3"
   }
 }

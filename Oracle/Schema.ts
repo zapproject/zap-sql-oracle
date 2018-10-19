@@ -9,14 +9,14 @@ export const Endpoints: EndpointSchema[] = [
         query: 'price',
         params: ['{coin}', '{time}'],
         response: ['{price}', '{notaryHash}'],
-        getResponse: () => ['response text']
+        getResponse: () => Promise.resolve(['response text'])
       },
-      {
+      /* {
         query: 'volume',
         params: ['{coin}', '{period}'],
         response: ['{volume}', '{notaryHash}'],
         getResponse: () => ['response text']
-      },
+      }, */
     ]
   },
 ];

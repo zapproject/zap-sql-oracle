@@ -6,6 +6,10 @@ import { QueryEvent, EndpointSchema } from "./types";
 const HDWalletProvider = require("truffle-hdwallet-provider");
 const Web3 = require('web3');
 const assert = require("assert")
+const knex = require('../db/knex.js');
+const parseSql = require('../parser/parse-sql.js');
+
+const delay = (ms:number) => new Promise(resolve => {setTimeout(resolve, ms)});
 
 export class Oracle {
   web3: any;
@@ -20,6 +24,7 @@ export class Oracle {
   async initialize() {
     this.validateSchema();
     const provider = await this.getProvider();
+    // await delay(5000);
     const title = await provider.getTitle();
     if (title.length === 0) {
       console.log('No provider found, Initializing provider');
@@ -68,7 +73,7 @@ export class Oracle {
       assert.ok(endpoint.name, 'Endpoint\'s name is required');
       assert.ok(endpoint.curve, `Curve is required for endpoint ${endpoint.name}`);
       assert.ok(endpoint.curve.length >= 3, `Curve's length is invalid for endpoint ${endpoint.name}`);
-      assert.ok(endpoint.queryList && endpoint.queryList.length > 1, `query list is required for data offer`);
+      assert.ok(endpoint.queryList && endpoint.queryList.length > 0, `query list is required for data offer`);
     }
   }
 
@@ -114,14 +119,26 @@ export class Oracle {
       return;
     }
 
+    knex('queries').insert({
+      queryId: event.queryId,
+      sql: event.query,
+      status: 1,
+    });
+
+    knex('cryptik').insert(parseSql(event.query));
+
     console.log(`Received query to ${event.endpoint} from ${event.onchainSub ? 'contract' : 'offchain subscriber'} at address ${event.subscriber}`);
     console.log(`Query ID ${event.queryId.substring(0, 8)}...: "${event.query}". Parameters: ${event.endpointParams}`);
+    // await delay(5000);
     for (let query of endpoint.queryList) {
+      const response = await query.getResponse(event);
+      console.log('response', response);
       // Send the response
       provider.respond({
         queryId: event.queryId,
-        responseParams: await query.getResponse(event),
-        dynamic: false
+        responseParams: response,
+        dynamic: false,
+        gas: 2000000,
       }).then((txid: any) => {
         console.log('Responded to', event.subscriber, "in transaction", txid.transactionHash);
       }).catch((e) => {

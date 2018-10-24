@@ -6,8 +6,8 @@ import { QueryEvent, EndpointSchema } from "./types";
 const HDWalletProvider = require("truffle-hdwallet-provider");
 const Web3 = require('web3');
 const assert = require("assert")
-const knex = require('../db/knex.js');
-const parseSql = require('../parser/parse-sql.js');
+import parseSql from '../parser/parse-sql';
+import knex from '../db/knex';
 
 const delay = (ms:number) => new Promise(resolve => {setTimeout(resolve, ms)});
 

@@ -8,7 +8,8 @@ module.exports = {
       database : 'coinmarketcap'
     },
     migrations: {
-      directory: __dirname + '/db/migrations'
+      directory: __dirname + '/db/migrations',
+      loadExtensions: ['.js'],
     }
   }
 }

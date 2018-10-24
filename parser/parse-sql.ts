@@ -22,4 +22,4 @@ const parseSql = (sql) => {
   return response;
 };
 
-module.exports = parseSql;
+export default parseSql;

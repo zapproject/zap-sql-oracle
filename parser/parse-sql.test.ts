@@ -1,4 +1,4 @@
-const parseSql = require('./parse-sql.js');
+import parseSql from './parse-sql';
 
 test('Will Bitcoin be more than $8,500 on 24 May at 22:00?', () => {
   expect(parseSql(

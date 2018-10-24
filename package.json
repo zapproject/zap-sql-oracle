@@ -7,7 +7,7 @@
     "build": "tsc",
     "test": "jest",
     "start": "npm run build && node Oracle/index.js",
-    "migrate": "knex migrate:latest"
+    "migrate": "npm run build && knex migrate:latest"
   },
   "keywords": [
     "Zap",
@@ -18,13 +18,14 @@
   "author": "Michael Man, propulsor",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^10.7.1",
     "@zapjs/artifacts": "^2.0.16",
     "@zapjs/bondage": "^2.0.13",
     "@zapjs/dispatch": "^2.0.15",
     "@zapjs/provider": "^2.0.16",
     "@zapjs/subscriber": "^2.0.12",
     "@zapjs/zaptoken": "^2.0.12",
+    "axios": "^0.18.0",
+    "bluebird": "^3.5.2",
     "knex": "^0.15.2",
     "mysql": "^2.16.0",
     "path": "^0.12.7",
@@ -34,8 +35,13 @@
     "websocket": "^1.0.28"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.7",
+    "@types/knex": "^0.14.26",
+    "@types/node": "^8.10.36",
+    "@types/request": "^2.47.1",
     "babel-polyfill": "^6.26.0",
     "jest": "^23.6.0",
+    "ts-jest": "^23.10.4",
     "typescript": "^3.0.3"
   }
 }

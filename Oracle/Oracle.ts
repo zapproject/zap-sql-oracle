@@ -1,30 +1,29 @@
+import * as Web3 from 'web3';
+import * as HDWalletProvider from 'truffle-hdwallet-provider';
+import * as assert from 'assert';
 import { ZapProvider } from "@zapjs/provider";
 import { ZapToken } from "@zapjs/zaptoken"
 import { config } from "./config";
 import { Endpoints } from "./Schema";
 import { QueryEvent, EndpointSchema } from "./types";
-const HDWalletProvider = require("truffle-hdwallet-provider");
-const Web3 = require('web3');
-const assert = require("assert")
-import parseSql from '../parser/parse-sql';
-import knex from '../db/knex';
+import { DEFAULT_GAS } from "@zapjs/types";
+import { addQuery } from "../db/queries";
+import { getProvider } from "./utils";
 
-const delay = (ms:number) => new Promise(resolve => {setTimeout(resolve, ms)});
 
 export class Oracle {
   web3: any;
   constructor() {
     this.web3 = new Web3(new HDWalletProvider(config.mnemonic, config.NODE_WS))
   }
-    /**
+  /**
    * Initializes the oracle. Creates the provider if it does not exist already.
    * For each endpoint in schema, create curve and params
    * Starts listening for queries and calling handleQuery function
    */
   async initialize() {
     this.validateSchema();
-    const provider = await this.getProvider();
-    // await delay(5000);
+    const provider = await getProvider(this.web3);
     const title = await provider.getTitle();
     if (title.length === 0) {
       console.log('No provider found, Initializing provider');
@@ -49,6 +48,7 @@ export class Oracle {
       } else {
         console.log(`curve ${endpoint.name} is set:`, await provider.getCurve(endpoint.name));
       }
+
       //Right now each endpoint can only store 1 set of params, so not storing params for more flexibility
       // else {
       //     //check params
@@ -59,11 +59,8 @@ export class Oracle {
       // }
 
       provider.listenQueries({}, (err: any, event: any) => {
-          if (err) {
-            throw err;
-          }
-          console.log('event', event);
-          this.handleQuery(provider, endpoint, event);
+        if (err) throw err;
+        this.handleQuery(provider, endpoint, event);
       });
     }
   }
@@ -75,25 +72,6 @@ export class Oracle {
       assert.ok(endpoint.curve.length >= 3, `Curve's length is invalid for endpoint ${endpoint.name}`);
       assert.ok(endpoint.queryList && endpoint.queryList.length > 0, `query list is required for data offer`);
     }
-  }
-
-  /**
-   * Loads a ZapProvider from a given Web3 instance
-   * @param web3 - WebSocket Web3 instance to load from
-   * @returns ZapProvider instantiated
-   */
-  private async getProvider(): Promise<ZapProvider> {
-    // loads the first account for this web3 provider
-    const accounts: string[] = await this.web3.eth.getAccounts();
-    if (accounts.length == 0) throw new Error('Unable to find an account in the current web3 provider');
-    const owner: string = accounts[0];
-    console.log('Loaded account:', owner);
-    // TODO: Add Zap balance
-    console.log('Wallet contains:', await this.web3.eth.getBalance(owner) / 1e18, 'ETH');
-    return new ZapProvider(owner, {
-      networkId: (await this.web3.eth.net.getId()).toString(),
-      networkProvider: this.web3.currentProvider
-    });
   }
 
   /**
@@ -114,37 +92,33 @@ export class Oracle {
       endpointParams: results.endpointParams.map(this.web3.utils.hexToUtf8),
       onchainSub: results.onchainSubscriber,
     }
-    if (event.endpoint != endpoint.name) {
+    if (event.endpoint !== endpoint.name) {
       console.log('Unable to find the callback for', event.endpoint);
       return;
     }
 
-    knex('queries').insert({
-      queryId: event.queryId,
-      sql: event.query,
-      status: 1,
-    });
-
-    knex('cryptik').insert(parseSql(event.query));
-
     console.log(`Received query to ${event.endpoint} from ${event.onchainSub ? 'contract' : 'offchain subscriber'} at address ${event.subscriber}`);
     console.log(`Query ID ${event.queryId.substring(0, 8)}...: "${event.query}". Parameters: ${event.endpointParams}`);
+
+    await addQuery(event)
+
     // await delay(5000);
-    for (let query of endpoint.queryList) {
+    /* for (let query of endpoint.queryList) {
       const response = await query.getResponse(event);
       console.log('response', response);
+      console.log('event.queryId', event.queryId);
       // Send the response
       provider.respond({
         queryId: event.queryId,
         responseParams: response,
         dynamic: false,
-        gas: 2000000,
+        gas: DEFAULT_GAS,
       }).then((txid: any) => {
         console.log('Responded to', event.subscriber, "in transaction", txid.transactionHash);
       }).catch((e) => {
         console.error(e)
         throw new Error(`Error responding to query ${event.queryId} : ${e}`)
       });
-    }
+    } */
   }
 }

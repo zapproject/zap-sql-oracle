@@ -2,7 +2,7 @@ import * as Knex from 'knex';
 export const up = function(knex: Knex, Promise) {
   return knex.schema.createTable('queries', table => {
     table.increments('id').primary();
-    table.string('queryId').notNullable();
+    table.string('queryId', 255).notNullable();
     table.text('sql').notNullable();
     table.integer('status').unsigned().notNullable();
     table.timestamp('received').defaultTo(knex.fn.now());
@@ -20,5 +20,5 @@ export const up = function(knex: Knex, Promise) {
 };
 
 export const down = function(knex, Promise) {
-  knex.schema.dropTable('queries').dropTable('cryptik');
+  return knex.schema.dropTable('queries').dropTable('cryptik');
 };

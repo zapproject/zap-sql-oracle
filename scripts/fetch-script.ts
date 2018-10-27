@@ -1,3 +1,3 @@
 import { updateCurrencies } from '../fetcher/coinmarketcap-fetch';
 
-updateCurrencies().then(() => { process.exit(0); })
+updateCurrencies().then((e) => { console.log('done', e) })

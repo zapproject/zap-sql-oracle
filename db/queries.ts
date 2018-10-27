@@ -10,7 +10,7 @@ export enum QueryStatus {
 
 export function addQuery(event: QueryEvent): any {
   const timestamp = Number(event.endpointParams[0]);
-  if (isNaN(timestamp) || timestamp * 1000 < Date.now()) {
+  if (isNaN(timestamp)/* || timestamp * 1000 < Date.now() */) {
     console.log('query timestamp is invalid or in past');
     return Promise.resolve();
   }
@@ -34,15 +34,17 @@ export async function getQueryData(queryId, sql) {
     .then(() => knex.raw(sql.replace('primary', '`primary`')));
 }
 
-export function completeQuery(queryId) {
+export function completeQuery(queryId, message = null) {
   return knex('queries').where('queryId', queryId).update({
     status: QueryStatus.Completed,
     query_executed: new Date(),
+    message,
   });
 }
 
-export function resetQuery(queryId) {
+export function queryError(queryId, message = null) {
   return knex('queries').where('queryId', queryId).update({
-    status: QueryStatus.Scheduled
+    query_executed: new Date(),
+    message,
   });
 }

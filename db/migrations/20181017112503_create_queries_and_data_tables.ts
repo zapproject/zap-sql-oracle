@@ -8,6 +8,7 @@ export const up = function(knex: Knex, Promise) {
     table.timestamp('received').defaultTo(knex.fn.now());
     table.timestamp('query_time').notNullable();
     table.timestamp('query_executed').nullable().defaultTo(null);
+    table.text('message').nullable().defaultTo(null);
   }).createTable('cryptik', table => {
     table.increments('id').primary();
     table.string('primary').nullable();

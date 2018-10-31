@@ -1,6 +1,7 @@
 # zap-sql-oracle
 
-#Oracle
+# Oracle
+
 Recieves SQL queries to be made against its database at a designated time in the future in a `queries` table with following schema
 ```
 +----------------+------------------+------+-----+---------------------+----------------+
@@ -17,7 +18,7 @@ Recieves SQL queries to be made against its database at a designated time in the
 +----------------+------------------+------+-----+---------------------+----------------+
 ```
 From incoming query, this script will pull:
-    `sql` from the query's `query` field
+- `sql` from the query's `query` field
     `query_time` from the query's endpointParams[0] field element
     `queryId` from the query's id field
     

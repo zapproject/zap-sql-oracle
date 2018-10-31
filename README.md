@@ -2,7 +2,7 @@
 
 #Oracle
 Recieves SQL queries to be made against its database at a designated time in the future in a `queries` table with following schema
-
+```
 +----------------+------------------+------+-----+---------------------+----------------+
 | Field          | Type             | Null | Key | Default             | Extra          |
 +----------------+------------------+------+-----+---------------------+----------------+
@@ -15,7 +15,7 @@ Recieves SQL queries to be made against its database at a designated time in the
 | query_executed | timestamp        | YES  |     | NULL                |                |
 | message        | text             | YES  |     | NULL                |                |
 +----------------+------------------+------+-----+---------------------+----------------+
-
+```
 From incoming query, this script will pull:
     `sql` from the query's `query` field
     `query_time` from the query's endpointParams[0] field element

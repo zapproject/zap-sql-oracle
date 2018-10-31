@@ -1,4 +1,10 @@
 # zap-sql-oracle
+Latest sql oracle template with coinmarketcap endpoint example 
+( example provider address: "0x3fda6E7e9E5AEca8c6B3CD8c32079fB97a4cb221", endpoint: "CoinBaseSource" )
+
+3 decoupled components to receive queries, respond to queries, and maintain endpoint data.
+Working off a `queries` table which can be used in analog oracles and an endpoint specific data table( different across endpoints, here we have the `cryptiks` pricing data )
+
 
 ## Oracle
 

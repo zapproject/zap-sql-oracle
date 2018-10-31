@@ -32,7 +32,7 @@ and insert these fields into its `queries` table with a `status`=0 and `query_ti
 
 ## Responder
 
-Monitors queries table for queries of `status`=0 and `query_time` < now
+Monitors queries table for queries of status=0 and query_time < now
 
 If rows are found, statement in `sql` column will be executed on the oracle's endpoint table( contains data for that endpoint)
 and submits result as response to dispatch with `queryId`
@@ -52,8 +52,8 @@ In this example, we have a coinmarketcap price ticker table, `cryptik`
 ````
 In this case, an account might query the oracle's `cryptik` endpoint with the following
 
-query field: `select price from cryptik where primary="BTC" and secondary="USD"`
-endpointParams[0]: `1541011258`
+- query field: `select price from cryptik where primary="BTC" and secondary="USD"`
+- endpointParams[0] field element: `1541011258`
 
 this account should expect to get a response ~ timestamp 1541011258
 
